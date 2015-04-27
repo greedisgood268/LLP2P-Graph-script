@@ -1,2 +1,2 @@
-# llp2p-Graph-script
+# LLP2P-Graph-script
 Script for llp2p
