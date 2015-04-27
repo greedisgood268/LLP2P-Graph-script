@@ -1,0 +1,8 @@
+read -p "which directory to get file: " directory
+echo $directory
+cp ~/$directory/record_strategy1.txt .
+cp ~/$directory/record_channel1.txt .
+cp ~/$directory/sys_stat1.txt .
+cp ~/$directory/content_strategy1.txt .
+cp ~/$directory/Log/client_data_of_chn_1.txt .
+cp ~/$directory/record_RttManager1.txt .

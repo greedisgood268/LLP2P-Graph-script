@@ -1,0 +1,5 @@
+python compare.py 0 > subStream0.txt
+python compare.py 1 > subStream1.txt
+python compare.py 2 > subStream2.txt
+python compare.py 3 > subStream3.txt
+python compare.py 4 > subStream4.txt

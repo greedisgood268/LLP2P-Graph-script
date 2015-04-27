@@ -1,0 +1,5 @@
+read -p "Input time: " time
+./topo GROUP $time-topo0.txt  $time-group0.jpeg hight1.txt hight2.txt hight3.txt hight4.txt
+./topo GROUP $time-topo1.txt  $time-group1.jpeg hight1.txt hight2.txt hight3.txt hight4.txt
+./topo GROUP $time-topo2.txt  $time-group2.jpeg hight1.txt hight2.txt hight3.txt hight4.txt
+./topo GROUP $time-topo3.txt  $time-group3.jpeg hight1.txt hight2.txt hight3.txt hight4.txt

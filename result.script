@@ -1,0 +1,1 @@
+awk 'BEGIN{maxDelay = 0; delay1 = 0; delay2 = 0;delay3 = 0;delay4 = 0;line = 0;}{maxDelay += $5;delay1 += $6;delay2 += $7;delay3 += $8;delay4 += $9;line++}END{print maxDelay/line, delay1/line,delay2/line,delay3/line,delay4/line}' out

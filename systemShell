@@ -1,0 +1,3 @@
+awk '{print $2}' sys_stat1.txt > peerNumber.txt
+awk '{print $4}' sys_stat1.txt > inputNumber.txt
+awk '{print $5}' sys_stat1.txt > outputNumber.txt
