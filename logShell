@@ -1,6 +1,6 @@
 grep "RESCUE," record_channel1.txt > rescueRequest.txt
 grep "requestPeerToMove for" record_strategy1.txt > moveRequest.txt 
-grep "*rescue_algorithm_for_merge_begin*" record_strategy1.txt > mergeRequest.txt
+grep "mergeAlgorithm for" record_strategy1.txt > mergeRequest.txt
 
 python commandCounter.py rescueRequest.txt > rescuePerTime.txt
 python commandCounter.py moveRequest.txt > movePerTime.txt
