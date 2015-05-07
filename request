@@ -30,12 +30,11 @@ grep -o 'pid:.*subStreamId:2*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*
 grep -o 'pid:.*subStreamId:3*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent3.txt
 
 grep -o 'pid:.*subStreamId:' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParentTotal.txt
-
-grep -o 'rescuePid:.*,manifest: 1,' $time-rescueRequest.txt | grep -o 'rescuePid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest0.txt
-grep -o 'rescuePid:.*,manifest: 2,' $time-rescueRequest.txt | grep -o 'rescuePid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest1.txt
-grep -o 'rescuePid:.*,manifest: 4,' $time-rescueRequest.txt | grep -o 'rescuePid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest2.txt
-grep -o 'rescuePid:.*,manifest: 8,' $time-rescueRequest.txt | grep -o 'rescuePid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest3.txt
-grep -o 'rescuePid:.*' $time-rescueRequest.txt | grep -o 'rescuePid:.*,manifest' | grep -o '[0-9]\{0,9\}' > $time-rescueRequestNumerousTotal.txt
+grep -o 'pid:.*,manifest: 1,' $time-rescueRequest.txt | grep -o 'pid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest0.txt
+grep -o 'pid:.*,manifest: 2,' $time-rescueRequest.txt | grep -o 'pid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest1.txt
+grep -o 'pid:.*,manifest: 4,' $time-rescueRequest.txt | grep -o 'pid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest2.txt
+grep -o 'pid:.*,manifest: 8,' $time-rescueRequest.txt | grep -o 'pid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest3.txt
+grep -o 'pid:.*' $time-rescueRequest.txt | grep -o 'pid:.*,manifest' | grep -o '[0-9]\{0,9\}' > $time-rescueRequestNumerousTotal.txt
 
 echo "Generating graphs"
 echo "Generating graphs: moveRequestParent"
