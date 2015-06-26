@@ -14,20 +14,20 @@ echo "Time files are created"
 
 echo "Generating files for subStreams"
 grep '*****mergeAlgorithm for' $time-record_strategy1.txt > $time-mergeRequest.txt
-grep -o 'for pid:.*,subStreamId:0**'  $time-mergeRequest.txt | grep -o 'for pid:.*,' | grep -o '[0-9]\{1,9\}' > $time-mergeRequest0.txt
-grep -o 'for pid:.*,subStreamId:1**'  $time-mergeRequest.txt | grep -o 'for pid:.*,' | grep -o '[0-9]\{1,9\}' > $time-mergeRequest1.txt
-grep -o 'for pid:.*,subStreamId:2**'  $time-mergeRequest.txt | grep -o 'for pid:.*,' | grep -o '[0-9]\{1,9\}' > $time-mergeRequest2.txt
-grep -o 'for pid:.*,subStreamId:3**'  $time-mergeRequest.txt | grep -o 'for pid:.*,' | grep -o '[0-9]\{1,9\}' > $time-mergeRequest3.txt
+grep -o 'for pid:.*,subStreamId:0\*'  $time-mergeRequest.txt | grep -o 'for pid:.*,' | grep -o '[0-9]\{1,9\}' > $time-mergeRequest0.txt
+grep -o 'for pid:.*,subStreamId:1\*'  $time-mergeRequest.txt | grep -o 'for pid:.*,' | grep -o '[0-9]\{1,9\}' > $time-mergeRequest1.txt
+grep -o 'for pid:.*,subStreamId:2\*'  $time-mergeRequest.txt | grep -o 'for pid:.*,' | grep -o '[0-9]\{1,9\}' > $time-mergeRequest2.txt
+grep -o 'for pid:.*,subStreamId:3\*'  $time-mergeRequest.txt | grep -o 'for pid:.*,' | grep -o '[0-9]\{1,9\}' > $time-mergeRequest3.txt
 
-grep -o 'pid:.*subStreamId:0*'  $time-moveRequest.txt | grep -o 'pid:.*,parentPeerPid' | grep -o '[0-9]\{1,9\}' > $time-moveRequest0.txt
-grep -o 'pid:.*subStreamId:1*'  $time-moveRequest.txt | grep -o 'pid:.*,parentPeerPid' | grep -o '[0-9]\{1,9\}' > $time-moveRequest1.txt
-grep -o 'pid:.*subStreamId:2*'  $time-moveRequest.txt | grep -o 'pid:.*,parentPeerPid' | grep -o '[0-9]\{1,9\}' > $time-moveRequest2.txt
-grep -o 'pid:.*subStreamId:3*'  $time-moveRequest.txt | grep -o 'pid:.*,parentPeerPid' | grep -o '[0-9]\{1,9\}' > $time-moveRequest3.txt
+grep -o 'pid:.*subStreamId:0\*'  $time-moveRequest.txt | grep -o 'pid:.*,parentPeerPid' | grep -o '[0-9]\{1,9\}' > $time-moveRequest0.txt
+grep -o 'pid:.*subStreamId:1\*'  $time-moveRequest.txt | grep -o 'pid:.*,parentPeerPid' | grep -o '[0-9]\{1,9\}' > $time-moveRequest1.txt
+grep -o 'pid:.*subStreamId:2\*'  $time-moveRequest.txt | grep -o 'pid:.*,parentPeerPid' | grep -o '[0-9]\{1,9\}' > $time-moveRequest2.txt
+grep -o 'pid:.*subStreamId:3\*'  $time-moveRequest.txt | grep -o 'pid:.*,parentPeerPid' | grep -o '[0-9]\{1,9\}' > $time-moveRequest3.txt
 
-grep -o 'pid:.*subStreamId:0*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent0.txt
-grep -o 'pid:.*subStreamId:1*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent1.txt
-grep -o 'pid:.*subStreamId:2*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent2.txt
-grep -o 'pid:.*subStreamId:3*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent3.txt
+grep -o 'pid:.*subStreamId:0\*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent0.txt
+grep -o 'pid:.*subStreamId:1\*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent1.txt
+grep -o 'pid:.*subStreamId:2\*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent2.txt
+grep -o 'pid:.*subStreamId:3\*' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParent3.txt
 
 grep -o 'pid:.*subStreamId:' $time-moveRequest.txt | grep -o 'parentPeerPid:.*,sub' | grep -o '[0-9]\{1,9\}' > $time-moveRequestParentTotal.txt
 grep -o 'pid:.*,manifest: 1,' $time-rescueRequest.txt | grep -o 'pid:.*,' | grep -o '[0-9]\{0,9\}' > $time-rescueRequest0.txt
@@ -55,7 +55,7 @@ echo "Generating graphs: moveRequest"
 ./topo GROUP $time-topo2.txt $time-moveRequest2.jpeg  $time-moveRequest2.txt
 ./topo GROUP $time-topo3.txt $time-moveRequest3.jpeg  $time-moveRequest3.txt
 
-echo "Generating graphs: rescueRequest"
+echo "Generating graphs: topologyGraph"
 ./topo NAT $time-topo0.txt $time-Peer0.jpeg
 ./topo NAT $time-topo1.txt $time-Peer1.jpeg
 ./topo NAT $time-topo2.txt $time-Peer2.jpeg
