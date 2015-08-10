@@ -1,0 +1,3 @@
+read -p "what time you want to parse? " time
+awk -v target=$time '{ if($1==target) print $0;}' client_data_of_chn_1.txt > temp.txt
+python Ip.py

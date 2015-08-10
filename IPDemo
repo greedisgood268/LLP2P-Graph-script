@@ -1,0 +1,2 @@
+read -p "input request time: "  time 
+python ipParser.py -t continent -n client_data_of_chn_1.txt -k content_strategy1.txt -a $time 

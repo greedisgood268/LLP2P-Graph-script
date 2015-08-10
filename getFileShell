@@ -6,3 +6,5 @@ cp ~/$directory/sys_stat1.txt .
 cp ~/$directory/content_strategy1.txt .
 cp ~/$directory/Log/client_data_of_chn_1.txt .
 cp ~/$directory/record_RttManager1.txt .
+cp ~/$directory/record_te_mgr1.txt .
+cp ~/$directory/record_peer_shut_down1.txt .
