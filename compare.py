@@ -8,16 +8,16 @@ def parseFile(command):
 
 	fileName = 'client_data_of_chn_1.txt'
 	readFile = open(fileName,'r')
-	value = [0.00,0.00,0.00,0.00,0.00]
+	value = [0.00 for x in range(0,5)]
 	time = 0
 	currentCheck = -1
-	accumulateDelay = [0.00,0.00,0.00,0.00,0.00]
+	accumulateDelay = [0.00 for x in range(0,5)]
 	accumulateTime = 0
 
 	for line in readFile:
 		result = line.split()
 		if currentCheck != int(result[0]):
-			printValue = [0.00,0.00,0.00,0.00,0.00]
+			printValue = [0.00 for x in range(0,5)]
 			for streamIndex in range(0,5):
 				if currentCheck != -1:
 					printValue[streamIndex] = value[streamIndex]/time	
