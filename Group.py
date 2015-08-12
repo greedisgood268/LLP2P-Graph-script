@@ -10,6 +10,29 @@ class Peer():
 	def getTime(self):
 		return self.time
 
+class GroupTime():
+	
+	def __init__(self):
+
+		self.sameTime = 0
+		self.differentTime = 0
+		self.totalTime = 0.0
+
+	def addSameTime(self):
+		self.sameTime = self.sameTime + 1
+		self.totalTime = self.totalTime + 1
+
+	def addDifferentTime(self):
+		self.differentTime = self.differentTime + 1
+		self.totalTime = self.totalTime + 1
+	
+	def getResult(self):
+		if self.totalTime == 0.0:
+			return 'Same Group: '+ '{:d}'.format(self.sameTime)+',Different Time: ' + '{:d}'.format(self.differentTime)+\
+			',Same Group Ratio: '+'{:f}'.format(0)
+		else:
+			return 'Same Group: '+ '{:d}'.format(self.sameTime)+',Different Time: ' + '{:d}'.format(self.differentTime)+\
+			',Same Group Ratio: '+'{:f}'.format(self.sameTime/self.totalTime)
 
 def getGroupPeers():
 	
@@ -29,16 +52,15 @@ def getGroupPeers():
 			pidSet = map(int,filter(None,pidSet))
 			for item in pidSet:
 				GroupList[item] = groupId
-	'''			
-	for item in GroupList.items():
-		print item[0],",",item[1]
-	'''
+
 	readFile.close()
 	return GroupList
 
 def sameGroup(pidGroupPair):
-	times = 0
-	sametimes = 0
+
+	moveTime = GroupTime()
+	rescueTime = GroupTime()
+	joinTime = GroupTime()
 
 	readFile = open('record_strategy1.txt','r')
 	for line in readFile:
@@ -53,11 +75,11 @@ def sameGroup(pidGroupPair):
 			pid = int(line[pidHead:pidTail])
 			try:
 				if pidGroupPair[pid] == pidGroupPair[candidatePid]:
-					sametimes = sametimes + 1
+					joinTime.addSameTime()
+				else:
+					joinTime.addDifferentTime()
 			except:
 				pass
-
-			times = times + 1
 
 		elif 'candidateRescueParent:' in line:
 			head = line.index('candidateRescueParent:')+len('candidateRescueParent:')
@@ -69,12 +91,14 @@ def sameGroup(pidGroupPair):
 			pidHead = line.index(',pid:')+len(',pid:')
 			pidTail = pidHead + line[pidHead:].index(',')
 			pid = int(line[pidHead:pidTail])
+
 			try:
 				if pidGroupPair[pid] == pidGroupPair[candidatePid]:
-					sametimes = sametimes + 1
+					rescueTime.addSameTime()			
+				else:
+					rescueTime.addDifferentTime()
 			except:
 				pass
-			times = times + 1
 
 		elif ('requestPeerToMove' in line) and ('parentPeerPid' in line):
 			head = line.index('parentPeerPid:') + len('parentPeerPid:')
@@ -88,14 +112,19 @@ def sameGroup(pidGroupPair):
 			pid = int(line[pidHead:pidTail])
 			try:
 				if pidGroupPair[pid] == pidGroupPair[candidatePid]:
-					sametimes = sametimes + 1
+					moveTime.addSameTime()
+				else:
+					moveTime.addDifferentTime()
 			except:
 				pass
-			times = times + 1
 
 	readFile.close()	
-	print (sametimes/float(times))
+
+	print 'Join,' + joinTime.getResult()
+	print 'Rescue,' + rescueTime.getResult()
+	print 'Move,' + moveTime.getResult()
 
 if __name__ == '__main__':
+
 	pidGroupPair = getGroupPeers()
 	sameGroup(pidGroupPair)
