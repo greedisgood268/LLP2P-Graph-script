@@ -1,4 +1,5 @@
 import argparse
+from geoip import geolite2
 
 class Peer():
 
@@ -169,6 +170,74 @@ def getOverallAverageHopDelay():
 		overallAverageHopDelay[index] = overallAverageHopDelay[index]/times[index]
 	return overallAverageHopDelay
 
+def getHistoryHopDelay():
+
+	readFile = open('client_data_of_chn_1.txt','r')
+	currentTime = -1 
+	peerInfo = {}
+
+	for line in readFile:
+
+		split = line.split()
+		if len(split) != 19: 
+			continue	
+
+		if (currentTime != int(split[0])) and (currentTime != -1) :
+			peerDelay = getAverageHopDelay(peerInfo)		
+			for index in range(0,4):
+				print peerDelay[index],
+			print '\n',
+			peerInfo.clear()
+
+		currentTime = int(split[0])
+		peer = Peer(int(split[1]))
+		peer.setDelay(split[5:9])
+		peer.setParent(split[15:])
+		peerInfo[int(split[1])] = peer
+		
+	peerDelay = getAverageHopDelay(peerInfo)		
+
+	for index in range(0,4):
+		print peerDelay[index],
+	print '\n',
+
+	readFile.close()
+
+def getGeoGroupPeers(time):
+
+	GroupList = {}	
+	Location = [] 
+
+	readFile = open('client_data_of_chn_1.txt','r')
+
+	for line in readFile:
+		split = line.split()
+		if len(split) != 19:
+			continue	
+
+		if int(split[0]) < time:
+			continue
+		elif int(split[0]) > time + 10:
+			break
+
+		pid = int(split[1])
+		if pid in split:
+			continue
+
+		match = geolite2.lookup(split[2])
+		value = match.continent
+
+		if value in Location:
+			groupId = Location.index(value)
+		else:
+			Location.append(value)
+			groupId = Location.index(value)
+
+		GroupList[pid] = groupId
+	print 'total Groups: ',len(Location)
+	readFile.close()
+	return GroupList
+
 def getGroupPeers():
 
 	GroupList = {}
@@ -209,7 +278,10 @@ def getGroupHopDelay(peerInfo,groupInfo):
 
 	return sameGroupHopDelay,differentGroupHopDelay
 
-def getOverallGroupHopDelay(groupInfo):
+def getHistoryGroupHopDelay():
+	pass
+
+def getOverallGroupHopDelay(groupInfo,time):
 
 	readFile = open('client_data_of_chn_1.txt','r')
 	differentGroupHopDelay = [ GroupDelay() for x in range(0,4)]
@@ -222,7 +294,7 @@ def getOverallGroupHopDelay(groupInfo):
 	for line in readFile:
 
 		split = line.split()
-		if len(split) != 19: 
+		if (len(split) != 19) or (int(split[0]) < time): 
 			continue	
 
 		if (currentTime != int(split[0])) and (currentTime != -1) :
@@ -259,30 +331,47 @@ if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-t',help='Give me the parse time',type=int,required = False)
-	parser.add_argument('-a',help='Give me the hop delay type',choices=['average','bound','Overall'],type=str)
+	parser.add_argument('-a',help='Give me the hop delay type',choices=['average','bound','Overall','History','HistoryGroup'],type=str)
 	parser.add_argument('-g',help='Get RTT group info',action='store_true',required=False)
+	parser.add_argument('-l',help='Get geo group info',action='store_true',required=False)
 	result = parser.parse_args()
 
-	if result.g:
+
+
+	if (result.g) and (result.t != None):
 		groupInfo = getGroupPeers()
-		sameGroup,differentGroup = getOverallGroupHopDelay(groupInfo)
+		sameGroup,differentGroup = getOverallGroupHopDelay(groupInfo,result.t)
 		for index in range(0,4):
 			print 'subStreamId: %d, Same group: %lf,times: %d,Different group: %lf,times: %d' % \
 			(index, sameGroup[index].getHopDelay(),sameGroup[index].getAverageBranch(),\
 			differentGroup[index].getHopDelay(),differentGroup[index].getAverageBranch())
 
-	elif result.t != None:
-		if result.a == 'average':
+	elif (result.l) and (result.t != None):
+
+		groupInfo = getGeoGroupPeers(result.t)
+		sameGroup,differentGroup = getOverallGroupHopDelay(groupInfo,result.t)
+		for index in range(0,4):
+			print 'subStreamId: %d, Same group: %lf,times: %d,Different group: %lf,times: %d' % \
+			(index, sameGroup[index].getHopDelay(),sameGroup[index].getAverageBranch(),\
+			differentGroup[index].getHopDelay(),differentGroup[index].getAverageBranch())
+	elif result.a != None:	
+
+		if (result.a == 'average') and (result.t != None):
 			peerInfo = getTimeSlotInfo(result.t)	
 			hopDelayResult = getAverageHopDelay(peerInfo)
 			print hopDelayResult
 
-		elif result.a == 'bound':
+		elif (result.a == 'bound') and (result.t != None):
 			peerInfo = getTimeSlotInfo(result.t)	
 			maxHop,minHop = getBoundHopDelay(peerInfo)
 			print 'Max bound: ',maxHop
 			print 'Min bound: ',minHop
 
+		elif result.a == 'History':
+			getHistoryHopDelay()				
+
+		elif result.a == 'HistoryGroup':
+			getHistoryGroupHopDelay()
 	else:
 		overallAverageHopDelay = getOverallAverageHopDelay()
 		print overallAverageHopDelay

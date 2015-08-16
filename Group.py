@@ -56,8 +56,9 @@ def getGroupPeers():
 	readFile.close()
 	return GroupList
 
-def sameGroup(pidGroupPair):
+def sameGroup():
 
+	pidGroupPair = getGroupPeers()
 	moveTime = GroupTime()
 	rescueTime = GroupTime()
 	joinTime = GroupTime()
@@ -125,6 +126,4 @@ def sameGroup(pidGroupPair):
 	print 'Move,' + moveTime.getResult()
 
 if __name__ == '__main__':
-
-	pidGroupPair = getGroupPeers()
-	sameGroup(pidGroupPair)
+	sameGroup()
