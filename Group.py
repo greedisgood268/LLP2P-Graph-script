@@ -1,129 +1,101 @@
-class Peer():
+from geoip import geolite2
 
-	def __init__(self,pid):
-		self.pid = pid
-		self.time = 0
+class Group(object):
 
-	def setTime(self):
-		self.time = self.time + 1
+	def __init__(self):	
+		self.GroupList = {}	
+
+	def isInTheSameGroup(self,pidA,pidB):
+		try:
+			return self.GroupList[pidA] == self.GroupList[pidB]
+		except KeyError:
+			print pidA,pidB,'are not shown in the group information' 
+			return False
+
+class GeoGroup(Group):
 	
-	def getTime(self):
-		return self.time
+	def getGroupInfo(self,fileName = 'client_data_of_chn_1.txt',time=200,duration=100,classifyType = 'continent'):
+		
+		print 'We get the Geographical Group Info from:',fileName,',from time slot:',time,\
+			',with duration:',duration,',and classifyType:',classifyType
+		self.GroupList = {}
+		readFile = open(fileName,'r')
 
-class GroupTime():
+		for line in readFile:
+
+			split = line.split()			
+			if len(split) != 19:
+				continue
+
+			if int(split[0]) < time:
+				continue
+			elif int(split[0]) > (time + duration):
+				break
+
+			match = geolite2.lookup(split[2])
+
+			if classifyType == 'continent':
+				value = match.continent
+			elif classifyType == 'country':
+				value = match.country
+
+			self.GroupList[int(split[1])] = value 
+
+		readFile.close()
+		return self.GroupList
+
+class RTTGroup(Group):
+
+	def getGroupInfo(self,fileName = 'record_RttManager1.txt'):
+		print 'We get the RTT Group Info from',fileName
+		self.GroupList = {}
+		readFile = open(fileName,'r')
+
+		for line in readFile:
+
+			if 'printInfo,groupId:' in line:
+				groupIdHead = line.index('printInfo,groupId:') + len('printInfo,groupId:')
+				groupIdTail = line.index(',pid:')
+				groupId = int(line[groupIdHead: groupIdTail])
+				pidSet = line[groupIdTail+len(',pid:'):].strip().split(',')
+				pidSet = map(int,filter(None,pidSet))
+				for item in pidSet:
+					self.GroupList[item] = groupId
+
+		readFile.close()
+		return self.GroupList
+
+class Branch(object):
+
+	def __init__ (self):
+		self.sameBranch = 0.0
+		self.differentBranch = 0.0
+		self.totalBranch = 0.0
+		self.counter = 0.0
+
+	def getCounter(self):
+		return self.counter
+
+	def addCounter(self,counter):
+		self.counter = self.counter + counter
+
+	def addSameGroupBranch(self,branch):
+		self.sameBranch = self.sameBranch + branch
+		self.totalBranch = self.totalBranch + branch
+
+	def addDifferentGroupBranch(self,branch):
+		self.differentBranch = self.differentBranch + branch
+		self.totalBranch = self.totalBranch + branch
+
+	def getSameGroupBranchRate(self):
+		return self.sameBranch/self.totalBranch
+
+	def getDifferentBranchRate(self):
+		return self.differentBranch/self.totalBranch
 	
-	def __init__(self):
+	def getSameGroupBranchNumber(self):
+		return self.sameBranch, self.totalBranch
 
-		self.sameTime = 0
-		self.differentTime = 0
-		self.totalTime = 0.0
+	def getDifferentBranchRate(self):
+		return self.differentBranch,self.totalBranch
 
-	def addSameTime(self):
-		self.sameTime = self.sameTime + 1
-		self.totalTime = self.totalTime + 1
-
-	def addDifferentTime(self):
-		self.differentTime = self.differentTime + 1
-		self.totalTime = self.totalTime + 1
-	
-	def getResult(self):
-		if self.totalTime == 0.0:
-			return 'Same Group: '+ '{:d}'.format(self.sameTime)+',Different Time: ' + '{:d}'.format(self.differentTime)+\
-			',Same Group Ratio: '+'{:f}'.format(0)
-		else:
-			return 'Same Group: '+ '{:d}'.format(self.sameTime)+',Different Time: ' + '{:d}'.format(self.differentTime)+\
-			',Same Group Ratio: '+'{:f}'.format(self.sameTime/self.totalTime)
-
-def getGroupPeers():
-	
-	readFile = open('record_RttManager1.txt','r')
-	GroupList = {}
-
-	for line in readFile:
-
-		if 'printInfo begin,group size:' in line:	
-			GroupList.clear()
-
-		if 'printInfo,groupId:' in line:
-			groupIdHead = line.index('printInfo,groupId:') + len('printInfo,groupId:')
-			groupIdTail = line.index(',pid:')
-			groupId = int(line[groupIdHead: groupIdTail])
-			pidSet = line[groupIdTail+len(',pid:'):].strip().split(',')
-			pidSet = map(int,filter(None,pidSet))
-			for item in pidSet:
-				GroupList[item] = groupId
-
-	readFile.close()
-	return GroupList
-
-def sameGroup():
-
-	pidGroupPair = getGroupPeers()
-	moveTime = GroupTime()
-	rescueTime = GroupTime()
-	joinTime = GroupTime()
-
-	readFile = open('record_strategy1.txt','r')
-	for line in readFile:
-		if 'candidateJoinParent:' in line:
-			head = line.index('candidateJoinParent:')+len('candidateJoinParent:')
-			tail = head + line[head:].index(',')
-			tempString = line[head:tail]
-			candidatePid = int(tempString)
-
-			pidHead = line.index(',pid:')+len(',pid:')
-			pidTail = pidHead + line[pidHead:].index(',')
-			pid = int(line[pidHead:pidTail])
-			try:
-				if pidGroupPair[pid] == pidGroupPair[candidatePid]:
-					joinTime.addSameTime()
-				else:
-					joinTime.addDifferentTime()
-			except:
-				pass
-
-		elif 'candidateRescueParent:' in line:
-			head = line.index('candidateRescueParent:')+len('candidateRescueParent:')
-			tail = head + line[head:].index(',')
-			tempString = line[head:tail]
-
-			candidatePid = int(tempString)
-
-			pidHead = line.index(',pid:')+len(',pid:')
-			pidTail = pidHead + line[pidHead:].index(',')
-			pid = int(line[pidHead:pidTail])
-
-			try:
-				if pidGroupPair[pid] == pidGroupPair[candidatePid]:
-					rescueTime.addSameTime()			
-				else:
-					rescueTime.addDifferentTime()
-			except:
-				pass
-
-		elif ('requestPeerToMove' in line) and ('parentPeerPid' in line):
-			head = line.index('parentPeerPid:') + len('parentPeerPid:')
-			tail = head + line[head:].index(',subStreamId')
-			tempString = line[head:tail]
-
-			candidatePid = int(tempString)
-
-			pidHead = line.index('pid:')+len('pid:')
-			pidTail = pidHead + line[pidHead:].index(',')
-			pid = int(line[pidHead:pidTail])
-			try:
-				if pidGroupPair[pid] == pidGroupPair[candidatePid]:
-					moveTime.addSameTime()
-				else:
-					moveTime.addDifferentTime()
-			except:
-				pass
-
-	readFile.close()	
-
-	print 'Join,' + joinTime.getResult()
-	print 'Rescue,' + rescueTime.getResult()
-	print 'Move,' + moveTime.getResult()
-
-if __name__ == '__main__':
-	sameGroup()
